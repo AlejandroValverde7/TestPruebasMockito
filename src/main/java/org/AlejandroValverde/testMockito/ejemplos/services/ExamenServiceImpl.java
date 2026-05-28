@@ -15,13 +15,8 @@ public class ExamenServiceImpl implements ExamenService{
 
     //Metodo para buscar el examen por nombre segun el primero enconrtado
     @Override
-    public Examen findExamenPorNombre(String nombre) {
-        Optional<Examen> examenOptional = examenRepository.findAll().stream().filter(n -> n.getNombre().contains(nombre)).findFirst();
-        Examen examen = null;
-            if(examenOptional.isPresent()){
-                examen = examenOptional.orElseThrow();
-            }
-        return examen;
+    public Optional<Examen> findExamenPorNombre(String nombre) {
+        return examenRepository.findAll().stream().filter(n -> n.getNombre().contains(nombre)).findFirst();
     }
 
 }
