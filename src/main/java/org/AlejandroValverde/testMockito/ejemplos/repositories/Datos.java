@@ -1,4 +1,4 @@
-package org.AlejandroValverde.testMockito.ejemplos.services;
+package org.AlejandroValverde.testMockito.ejemplos.repositories;
 
 import org.AlejandroValverde.testMockito.ejemplos.models.Examen;
 

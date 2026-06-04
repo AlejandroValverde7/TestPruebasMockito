@@ -12,19 +12,21 @@ import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.*;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 //@ExtendWith(MockitoExtension.class) //Con esto tambien podemos usar anotaciones y tener la dependencia de mock junit
-class ExamenServiceImplTest {
+class ExamenServiceImplSpyTest {
 
     //Gracias a las anotaciones mock no necesitamos usar new ni nada asi
-    @Mock
+    @Spy
     ExamenRepositoryImpl repository;
-    @Mock
+    @Spy
     PreguntaRepositoryImpl preguntaRepository;
 
     //Crea la instanacia y ademas inyecta los objetos necesarios
@@ -277,62 +279,6 @@ class ExamenServiceImplTest {
 
         verify(examenRepository.findAll());
         verify(preguntaRepository.findPreguntasPorExamenId(anyLong()));
-    }
-
-    //permite verificar el orden
-    @Test
-    void testOrdenDeInvocaciones() {
-        when(repository.findAll()).thenReturn(Datos.EXAMENES);
-
-        service.findExamenPorNombreConPreguntas("Matematicas");
-        service.findExamenPorNombreConPreguntas("Lengua");
-
-        InOrder inOrder = inOrder(preguntaRepository);
-        inOrder.verify(preguntaRepository).findPreguntasPorExamenId(5L);
-        inOrder.verify(preguntaRepository).findPreguntasPorExamenId(6L);
-    }
-
-    @Test
-    void testOrdenDeInvocaciones2() {
-        when(repository.findAll()).thenReturn(Datos.EXAMENES);
-
-        service.findExamenPorNombreConPreguntas("Matematicas");
-        service.findExamenPorNombreConPreguntas("Lengua");
-
-        InOrder inOrder = inOrder(repository,preguntaRepository);
-        inOrder.verify(repository).findAll();
-        inOrder.verify(preguntaRepository).findPreguntasPorExamenId(5L);
-        inOrder.verify(repository).findAll();
-        inOrder.verify(preguntaRepository).findPreguntasPorExamenId(6L);
-    }
-
-    //Controlamos el numero de invocaciones a la hora de probar
-    @Test
-    void testNumeroInvocaciones() {
-        when(repository.findAll()).thenReturn(Datos.EXAMENES);
-        service.findExamenPorNombreConPreguntas("Matematicas");
-
-        verify(preguntaRepository).findPreguntasPorExamenId(5L);
-        verify(preguntaRepository, times(1)).findPreguntasPorExamenId(5L);
-        verify(preguntaRepository, atLeast(1)).findPreguntasPorExamenId(5L);
-        verify(preguntaRepository, atLeastOnce()).findPreguntasPorExamenId(5L);
-        verify(preguntaRepository, atMost(1)).findPreguntasPorExamenId(5L);
-        verify(preguntaRepository, atMostOnce()).findPreguntasPorExamenId(5L);
-    }
-
-    //Controlamos el numero de invocaciones a la hora de probar
-    @Test
-    void testNumeroInvocaciones3() {
-        when(repository.findAll()).thenReturn(Collections.emptyList());
-        service.findExamenPorNombreConPreguntas("Matematicas");
-
-        verify(preguntaRepository, never()).findPreguntasPorExamenId(5L);
-        verifyNoInteractions(preguntaRepository); //verifica q no interactua
-
-        verify(repository).findAll();
-        verify(repository,times(1)).findAll();
-        verify(repository,atLeast(1)).findAll();
-        verify(repository,atLeastOnce()).findAll();
     }
 }
 
